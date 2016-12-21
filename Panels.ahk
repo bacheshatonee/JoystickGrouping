@@ -5,7 +5,7 @@ SendMode Input
 
 ;   Class Definitions
 ;***********************
-class VPANEL
+class VPANEL																; Panel objects hold the master states for their associated button objects, this determines which buttons are effected by included shift states
 {
 	;instance variable definitions
 	panelName := "test"
@@ -23,13 +23,13 @@ class VPANEL
 		return this
 	}
 	
-	getName()
+	getName()																; Return the name of the Panel
 	{
 		;MsgBox, 0, Parent,% "Parent ref: " . this.panelName
 		return this.panelName	
 	}
 	
-	RemoveMaster(inValue, inIndex)
+	RemoveMaster(inValue, inIndex)											; Remove both idexes of the master state from "masterStateArray"
 	{
 		;MsgBox ,0,Remove Master, 
 		; Loop through the array
@@ -37,42 +37,33 @@ class VPANEL
 		this.masterStateArray.Remove(inIndex)
 	}
 	
-	setMaster(inMasterState)
+	setMaster(inMasterState)												; Set the current masterState of the Panel, this is used to store continuous(toggle) master keys and is normally "default"
 	{
 		this.masterState := inMasterState
 		return
 	}
 	
-	AddMaster(inValue, inIndex)
+	AddMaster(inValue, inIndex)												; Adds a master state to the "masterStateArray" at the specified index if it does not already exist in the array
 	{
 		if this.masterStateArray[inValue] = ""
 		{
 			
 			this.masterStateArray[inValue] := inIndex
 			this.masterStateArray[inIndex] := inValue
-			;MsgBox, 0, Add Master,% "Index: " . this.masterStateArray[inValue] . " | Value: " . this.masterStateArray[inIndex] 
 		}
 		return
 	}
 	
-	getMaster()
+	getMaster()																; Returns the current master state, normally "default" unless a continuous(toggle) master key has been pressed
 	{
 	RETURN this.masterState	
 	}
 	
-	getMasterCount()
-	{
-		return this.masterStateArray[elementCount]
-	}
-	getMasterByRef(inRef)
+	getMasterByRef(inRef)													; return the master state at the given index
 	{
 		return this.masterStateArray[inRef]
 	}
 	
-	;GetMasterArray
-	;{
-	;	return object(this.masterStateArray)
-	;}
 }
 
 
@@ -80,23 +71,20 @@ class VPANEL
 
 
 
-class VBUTTON		;class definition for button on a panel
+class VBUTTON																;class definition for button on a panel
 {
 	;instance variable definitions
-	isContinuous := 0										;bool defining if this is a single send per button press "0", or if it continuously sends an input "1"
-	isMaster := 0											;bool defining if this is a master button
+	isContinuous := 0														;bool defining if this is a single send per button press "0", or if it continuously sends an input "1"
+	isMaster := 0															;bool defining if this is a master button
 	isToggle := 0
-	physicalID := 0											;the physical id of the button on the Joystick
-	valueArray := []										;arrray contianing value pairs using parent's master state as keys
-	currentState := 0										;current state of button
-	signalFrequency := 30										;frequency used for continuous input
-	PARENT := Object()										;Parent object, used for reference
-	buttonRef :=											;string reference for this particular button
-	
-	;Static Variable Definition
+	physicalID := 0															;the physical id of the button on the Joystick
+	valueArray := []														;arrray contianing value pairs using parent's master state as keys
+	currentState := 0														;current state of button
+	signalFrequency := 30													;frequency used for continuous input
+	PARENT := Object()														;Parent object, used for reference
+	buttonRef :=															;string reference for this particular button
 	
 	;Method definitions
-
 	__New(inPARENT, inPhysicalID, inIsMaster:=0, inIsContinuous:=0, newVal:=1, inSignalFrequency:=30)
 	{
 		
@@ -109,14 +97,8 @@ class VBUTTON		;class definition for button on a panel
 		this.valueArray[this.PARENT.getMasterbyRef(1)] := newVal
 		this.signalFrequency := inSignalFrequency
 		
-		
-		
-		
-		
 		;amalgamate the reference name for the button and store it in buttonRef
 		this.buttonRef := this.PARENT.JoystickID . "Joy" . this.physicalID
-		
-		;MsgBox, 0, vButton Creation,% "Button being created: " . this.buttonRef . " | Key: " . this.PARENT.getMaster() . " | Stored Value: " . this.valueArray[this.PARENT.getMaster()]
 					
 		;Set the current state in case the button is currently on
 		this.currentState := GetKeyState(this.buttonRef)
@@ -128,11 +110,10 @@ class VBUTTON		;class definition for button on a panel
 			Loop 8
 			{
 				index := index + 1
-				;MsgBox, 0, find next available index,% "index: " . index . "Value: " . this.PARENT.getMasterByRef(index)
 				if !this.PARENT.getMasterByRef(index) 
 					break
 			}
-			this.PARENT.addMaster(this.buttonRef, index)			;if this is a master switch, change the master state of the parent panel
+			this.PARENT.addMaster(this.buttonRef, index)					;if this is a master switch, add the master state to the parent panel at the lowest free index
 		}
 					
 		if this.currentState
@@ -143,83 +124,43 @@ class VBUTTON		;class definition for button on a panel
 		return this
 	}
 	
-	ChangePanel(inPanelID)
+	ChangePanel(inPanelID)													; Change the Panel that this Button belongs to	
 	{
-		MsgBox, 0, ChangePanel,% "inPanelID: " . inPanelID . " | Button: " . this.buttonRef . " | Current Panel: " . this.PARENT.GetName()
-		if this.isMaster
+		if this.isMaster													; if this button is currently designated as a master, remove it before changing panels
 		{
 		index := 0
 		Loop 8
 		{
 			index := index + 1
-			MsgBox, 0, ChangePanel - loop,% "index: " . index . " | Master by Ref: " . this.PARENT.getMasterByRef(index) . " | button: " . this.buttonRef
-			if (this.PARENT.getMasterByRef(index) = this.buttonRef)
+			if (this.PARENT.getMasterByRef(index) = this.buttonRef)			; Find the index that this button is at in the "masterStateArray"
 				break
 		}
-			this.PARENT.RemoveMaster(inValue, inIndex)
+			this.PARENT.RemoveMaster(this.buttonRef, index)
 			this.isMaster := 0
 		}
 		
-		if (inPanelID = "Panel1")
-			this.PARENT := Panel1
+		this.PARENT := inPanelID
 		
-		if (inPanelID = "Panel2")
-			this.PARENT := Panel2
-		
-		if (inPanelID = "Panel3")
-			this.PARENT := Panel3
-		
-		if (inPanelID = "Panel4")
-			this.PARENT := Panel4
-		
-		if (inPanelID = "Panel5")
-			this.PARENT := Panel5
-		
-		if (inPanelID = "Panel6")
-			this.PARENT := Panel6
-		
-		if (inPanelID = "Panel7")
-			this.PARENT := Panel7
-		
-		if (inPanelID = "Panel8")
-			this.PARENT := Panel8
+		return
 	}
 	
-	SetValue(newVal)
-	{
-		if (not isMaster)
-		{
-			;MsgBox, 0, Set a new value,% "Button being set: " . this.buttonRef . " | Key: " . this.PARENT.getMaster() . " | Value to be stored: " . newVal
-			this.valueArray[this.PARENT.getMaster()] := newVal
-			;MsgBox, 0, Set a new value,% "Button being set: " . this.buttonRef . " | Key: " . this.PARENT.getMaster() . " | Stored Value: " . this.valueArray[this.PARENT.getMaster()]
-			return 1
-		}
-		return 0
-	}
-	
-	GetValue()
-	{
-		;MsgBox, 0, Set a new value,% "Button being set: " . this.valueArray[this.PARENT.getMaster()]
-		return this.valueArray[this.PARENT.getMaster()]
-	}
-	
-	CheckContinuous()
+	CheckContinuous()														; Bool indicating if this button is designated as continuous
 	{
 		return this.isContinuous	
 	}
 	
-	SetContinuous(inValue)
+	SetContinuous(inValue)													; set a Bool value indicating if this button is designated as continuous
 	{
 		this.isContinuous := inValue
 		return 1
 	}
 	
-	CheckMaster()
+	CheckMaster()															; Bool indicating if this button is designated as a master
 	{
 		return this.isMaster
 	}
 	
-	SetMaster(inValue, inIndex)
+	SetMaster(inValue, inIndex)												; set a Bool value indicating if this button is designated as a master
 	{
 	
 		this.isMaster := 1
@@ -227,67 +168,68 @@ class VBUTTON		;class definition for button on a panel
 		return 1
 	}
 	
-	RemoveMaster(inValue, inIndex)
+	RemoveMaster(inValue, inIndex)											; Remove the master state from the "masterStateArray"
 	{
 		this.PARENT.RemoveMaster(inValue, inIndex)
 		this.isMaster := 0
 		return
 	}
 	
-	getParent()
+	getParent()																; return the name of the current panel associated with this button
 	{
-		;MsgBox, 0, Parent,% "Parent ref: " . this.PARENT.getName()
 		return this.PARENT.getName()
 	}
 	
-	GetPanelObj()
+	GetPanelObj()															; returns the actual Panel object associated with this button
 	{
 		return this.PARENT
 	}
 	
-	GetMasterByRef(inRef)
+	GetMasterByRef(inRef)													; return the master state at the given index in the "masterStateArray"
 	{
-		;MsgBox, 0, Master State 1,% "this.PARENT.getMasterByRef(inRef): " . this.PARENT.getMasterByRef(inRef)
 		return this.PARENT.getMasterByRef(inRef)
 	}
 	
-	;GetMasterArray()
-	;{
-	;	return this.PARENT.getMasterArray()
-	;}
-	
-	ButtonDown()
+	ButtonDown()															; Actions to be performed when a button is pressed
 	{
 		sleep 25
-		if not GetKeyState(this.buttonRef)
+		if not GetKeyState(this.buttonRef)									; this should remove ghosted inputs from a shorting joystick controller, it eliminates any input that lasts less than ~25 miliseconds
 		{
-			MsgBox, 0, Ghost,% "Button press being ghosted: " . this.buttonRef
 			return 0
 		}
 		this.currentState := 1
 		
-		if this.isMaster and this.isToggle										;if this is a master switch and is set to continuous/toggle, change the master state of the parent panel
+		if this.isMaster and this.isContinuous								; if this is a master switch and is set to continuous/toggle, change the master state of the parent panel
 		{
-			if (this.PARENT.GetMaster() == this.buttonRef())
+			if (this.PARENT.GetMaster() == this.buttonRef)					; If the master state of the panel is already set to this button then un-toggle it and return it to default
 			{
 				this.PARENT.setMaster("default")			
-			}else
+			}else															; otherwise set the current master state to this button
 			{
 				this.PARENT.setMaster(this.buttonRef)
 			}
 			return
 		}
 		
+		panelState := this.PARENT.GetMaster()								; Set the current master state to the current master state for the panel
 		
-		panelState := "default"
-		
-		;MsgBox, 0, Button Press,% "Button being pressed: " . this.buttonRef . " | Master State Key: " . panelState . " | Stored Value: " . this.valueArray[panelState]
+		msIndex := 0
+		loop 8																; Test each of the master states in the  to see if any of them are currently down
+		{
+			msIndex := msIndex + 1
+			testMaster := GetKeyState(this.PARENT.GetMasterByRef(msIndex))	; If any of them are down, set them as the master state
+			if (GetKeyState(testMaster) = "D")
+			{
+				panelState := testMaster
+				break
+			}
+		}
 		
 		sendValue := this.valueArray[panelState]
 		
-		Send %sendValue%   ; Send the initial keystroke
+		Send %sendValue%   													; Send the initial keystroke
 		
-		if this.isContinuous				;if this is a continuous button, send the input again
+		if this.isContinuous												;if this is a continuous button, send the input again
 		{
 			while GetKeyState(this.buttonRef)
 			{
@@ -299,15 +241,13 @@ class VBUTTON		;class definition for button on a panel
 		return 1
 	}
 	
-	GetValueByMaster(inMaster)
+	GetValueByMaster(inMaster)												; return the value associated with a given master state in the "valueArray"
 	{
-		;MsgBox, 0, Value by Master,% "Value to test: " . inMaster . " | Value: " . this.valueArray[inMaster]
 		return this.valueArray[inMaster]
 	}
 	
-	SetValueByMaster(inValue, inMaster)
+	SetValueByMaster(inValue, inMaster)										; set the value of a given master state for this button in the "valueArray"
 	{
-		;MsgBox, 0, Store Value by Master,% "Value to store: " . inValue . " | Master: " . inMaster
 		this.valueArray[inMaster] := inValue
 		return 1
 	}

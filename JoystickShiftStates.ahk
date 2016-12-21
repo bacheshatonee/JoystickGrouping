@@ -1,22 +1,34 @@
+;******************************************************************************************		Global Variables
+
+buttonMatrix := []
+panelMatrix := []
+
+ExitState := 0
+
+
 #include C:\Users\Chris\Dropbox\Personal Docs\Flight Sim Cockpit\Panels.ahk						; Classes that describe the panel and button objects
 #include C:\Users\Chris\Dropbox\Personal Docs\Flight Sim Cockpit\BuildPanels.ahk				; Instructions for creating a set of panels and objects as a starter
 
-;#include C:\Users\Chris\Dropbox\Personal Docs\Flight Sim Cockpit\ButtonMap.ahk					; Code to have the inputs from the joysticks remapped throug this system
-
-;******************************************************************************************		Variables
+#include C:\Users\Chris\Dropbox\Personal Docs\Flight Sim Cockpit\ButtonMap.ahk					; Code to have the inputs from the joysticks remapped through this system, also calls the GUI for the first time
 
 
 
-;******************************************************************************************		Commands
-	
-	
-goto ResetInputGui
 
-GuiExit:
 
-MsgBox, 0, Panels,% "Post GUI Loaded"
-#include C:\Users\Chris\Dropbox\Personal Docs\Flight Sim Cockpit\ButtonMap.ahk					; Code to have the inputs from the joysticks remapped throug this system
-return
+;******************************************************************************************		General Runtime
+
+
+Running:
+while !ExitState
+{
+	Sleep 30
+	GetKeyState, test1, LCtrl
+	GetKeyState, test2, F12
+	if (test1 = "D" and test2 = "D")
+		Goto ResetInputGui
+}
+ExitApp
+
 
 
 ;******************************************************************************************   GUI Functions
@@ -83,41 +95,40 @@ ResetInputGui:
 	outValue6 := buttonMatrix[selectedButton].getValueByMaster(masterState6)
 	outValue7 := buttonMatrix[selectedButton].getValueByMaster(masterState7)
 	outValue8 := buttonMatrix[selectedButton].getValueByMaster(masterState8)
-		
-	;Gui, Add, Text, vPanelID x22 y19 w100 h20 , PanelID: %PanelID%							;Build the GUI to view and edit keymappings
-	Gui, Add, Radio, -Wrap vPanelID x22 y15 h20 checked%Panel1% , Panel1
-	Gui, Add, Radio, -Wrap x92 y15 h20 checked%rPanel2% , Panel2
-	Gui, Add, Radio, -Wrap x162 y15 h20 checked%rPanel3% , Panel3
-	Gui, Add, Radio, -Wrap x232 y15 h20 checked%rPanel4% , Panel4
-	Gui, Add, Radio, -Wrap x22 y35 h20 checked%rPanel5% , Panel5
-	Gui, Add, Radio, -Wrap x92 y35 h20 checked%rPanel6% , Panel6
-	Gui, Add, Radio, -Wrap x162 y35 h20 checked%rPanel7% , Panel7
-	Gui, Add, Radio, -Wrap x232 y35 h20 checked%rPanel8% , Panel8
+
+	Gui, Add, Radio, -Wrap vPanelID x20 y15 h20 checked%Panel1% , Panel1		; Build the GUI to view and edit keymappings
+	Gui, Add, Radio, -Wrap x90 y15 h20 checked%rPanel2% , Panel2
+	Gui, Add, Radio, -Wrap x160 y15 h20 checked%rPanel3% , Panel3
+	Gui, Add, Radio, -Wrap x230 y15 h20 checked%rPanel4% , Panel4
+	Gui, Add, Radio, -Wrap x20 y35 h20 checked%rPanel5% , Panel5
+	Gui, Add, Radio, -Wrap x90 y35 h20 checked%rPanel6% , Panel6
+	Gui, Add, Radio, -Wrap x160 y35 h20 checked%rPanel7% , Panel7
+	Gui, Add, Radio, -Wrap x230 y35 h20 checked%rPanel8% , Panel8
 	
 	
-	Gui, Add, Text, vselectedButton x22 y65 w100 h20 , Button: %selectedButton%
+	Gui, Add, Text, vselectedButton x20 y65 w100 h20 , Button: %selectedButton%
 
-	Gui, Add, CheckBox, vcbMaster x142 y65 h20 checked%cbMaster% , Master
-	Gui, Add, CheckBox, vcbContinuous x222 y65 h20 checked%cbContinuous% , Continuous
+	Gui, Add, CheckBox, vcbMaster x140 y65 h20 checked%cbMaster% , Shift
+	Gui, Add, CheckBox, vcbContinuous x220 y65 h20 checked%cbContinuous% , Continuous
 
-	Gui, Add, Button, vSelect x352 y19 w100 h30 , Select
-	Gui, Add, Text, x22 y125 w100 h20 , 1:   %masterState1%
-	Gui, Add, Text, x22 y155 w100 h20 , 2:   %masterState2%
-	Gui, Add, Text, x22 y185 w100 h20 , 3:   %masterState3%
-	Gui, Add, Text, x22 y215 w100 h20 , 4:   %masterState4%
-	Gui, Add, Text, x22 y245 w100 h20 , 5:   %masterState5%
-	Gui, Add, Text, x22 y275 w100 h20 , 6:   %masterState6%
-	Gui, Add, Text, x22 y305 w100 h20 , 7:   %masterState7%
-	Gui, Add, Text, x22 y335 w100 h20 , 8:   %masterState8%
+	Gui, Add, Button, vSelect x350 y19 w100 h30 , Select
+	Gui, Add, Text, x20 y125 w100 h20 , 1:   %masterState1%
+	Gui, Add, Text, x20 y155 w100 h20 , 2:   %masterState2%
+	Gui, Add, Text, x20 y185 w100 h20 , 3:   %masterState3%
+	Gui, Add, Text, x20 y215 w100 h20 , 4:   %masterState4%
+	Gui, Add, Text, x20 y245 w100 h20 , 5:   %masterState5%
+	Gui, Add, Text, x20 y275 w100 h20 , 6:   %masterState6%
+	Gui, Add, Text, x20 y305 w100 h20 , 7:   %masterState7%
+	Gui, Add, Text, x20 y335 w100 h20 , 8:   %masterState8%
 
-	Gui, Add, Edit, vInValue1 x132 y125 w90 h20 , %outValue1%
-	Gui, Add, Edit, vInValue2 x132 y155 w90 h20 , %outValue2%
-	Gui, Add, Edit, vInValue3 x132 y185 w90 h20 , %outValue3%
-	Gui, Add, Edit, vInValue4 x132 y215 w90 h20 , %outValue4%
-	Gui, Add, Edit, vInValue5 x132 y245 w90 h20 , %outValue5%
-	Gui, Add, Edit, vInValue6 x132 y275 w90 h20 , %outValue6%
-	Gui, Add, Edit, vInValue7 x132 y305 w90 h20 , %outValue7%
-	Gui, Add, Edit, vInValue8 x132 y335 w90 h20 , %outValue8%
+	Gui, Add, Edit, vInValue1 x130 y125 w90 h20 , %outValue1%
+	Gui, Add, Edit, vInValue2 x130 y155 w90 h20 , %outValue2%
+	Gui, Add, Edit, vInValue3 x130 y185 w90 h20 , %outValue3%
+	Gui, Add, Edit, vInValue4 x130 y215 w90 h20 , %outValue4%
+	Gui, Add, Edit, vInValue5 x130 y245 w90 h20 , %outValue5%
+	Gui, Add, Edit, vInValue6 x130 y275 w90 h20 , %outValue6%
+	Gui, Add, Edit, vInValue7 x130 y305 w90 h20 , %outValue7%
+	Gui, Add, Edit, vInValue8 x130 y335 w90 h20 , %outValue8%
 
 	;********************************************    Requires functionality update to support
 	;Gui, Add, CheckBox, vcbContinuous1 x232 y119 w100 h20 , %cbContinuous1%
@@ -130,57 +141,37 @@ ResetInputGui:
 	;Gui, Add, CheckBox, vcbContinuous8 x232 y329 w100 h20 , %cbContinuous8%
 	;Gui, Add, Text, x232 y89 w90 h20 , Continuous:
 
-	Gui, Add, Text, x132 y95 w90 h20 , Assigned Value:
-	Gui, Add, Text, x22 y95 w100 h20 , Shift State:
+	Gui, Add, Text, x130 y95 w90 h20 , Assigned Value:
+	Gui, Add, Text, x20 y95 w100 h20 , Shift State:
 	
-	Gui, Add, Button, x352 y59 w100 h30 , Save
-	Gui, Add, Button, x352 y99 w100 h30 , Cancel
+	Gui, Add, Button, x350 y60 w100 h30 , Save
+	Gui, Add, Button, x350 y100 w100 h30 , Cancel
+	Gui, Add, Button, x350 y140 w100 h30 , Exit
+	;Gui, Add, Button, x350 y180 w100 h30 , Import
+	;Gui, Add, Button, x350 y220 w100 h30 , Export
 		
-																				; Push any changes in the values to the GUI
-	
-	;GuiControl,, panelID, PanelID: %PanelID%
-	;GuiControl,, selectedButton, Button: %selectedButton%
-
-	;GuiControl,, Label1, Master
-	;GuiControl,, cbMaster, Master
-
-	;GuiControl,, Label2, Continuous
-	;GuiControl,, cbContinuous, Continuous
-	
-	;GuiControl,, 1:, 1: %masterState1%
-	;GuiControl,, 2:, 2: %masterState2%
-	;GuiControl,, 3:, 3: %masterState3%
-	;GuiControl,, 4:, 4: %masterState4%
-	;GuiControl,, 5:, 5: %masterState5%
-	;GuiControl,, 6:, 6: %masterState6%
-	;GuiControl,, 7:, 7: %masterState7%
-	;GuiControl,, 8:, 8: %masterState8%
-
-	;GuiControl,, inValue1, %outValue1%
-	;GuiControl,, inValue2, %outValue2%
-	;GuiControl,, inValue3, %outValue3%
-	;GuiControl,, inValue4, %outValue4%
-	;GuiControl,, inValue5, %outValue5%
-	;GuiControl,, inValue6, %outValue6%
-	;GuiControl,, inValue7, %outValue7%
-;	GuiControl,, inValue8, %outValue8%
-	
-	Gui, Show, w479 h379, Input Mapping
-
-
-
-	
+	Gui, Show, w480 h380, Input Mapping
 
 	return
 
 
 
 
-;*************************************************************************				Labels	
+;*************************************************************************				GUI Labels	
 
 ButtonSave:
 	gui, submit
 	gui, destroy
+	
+	if (strlen(PanelID) < 2)																		; fix the panel name
+		PanelID := "Panel" . PanelID
+	
+	if !(oldPanelID = PanelID)																		; lookup the new panel and send it to the button to be remapped
+	{
+		buttonMatrix[selectedButton].ChangePanel(PanelMatrix[PanelID])
+		goto ResetInputGui																			; rebuild gui with new panel info
+	}
+	
 	
 	buttonMatrix[selectedButton].SetValueByMaster(inValue1, masterState1)
 	if StrLen(masterState 2)
@@ -203,36 +194,30 @@ ButtonSave:
 	if (oldMaster = 0 and cbMaster = 1)																;Figure out if the master state has changed and if it has make the change to the button Object
 	{
 		index := 0
-		Loop 8
+		Loop 8																						; Find the lowest index to save the new master state to
 		{
 			index := index + 1
 			if !buttonMatrix[selectedButton].getMasterByRef(index) 
 				break
 		}
 		buttonMatrix[selectedButton].SetMaster(selectedButton, index)
-	}else if (oldMaster = 1 and cbMaster = 0)
+	}else if (oldMaster = 1 and cbMaster = 0)											
 	{
-		index := 0
+		index := 0																					; Find the index where the master state appears so that it can be removed
 		Loop 8
 		{
 			index := index + 1
 			if (buttonMatrix[selectedButton].getMasterByRef(index) = selectedButton)
 				break
 		}
-		buttonMatrix[selectedButton].RemoveMaster(selectedButton, index)
+		buttonMatrix[selectedButton].RemoveMaster(selectedButton, index)							; remove the master state from the Panel associated with this Button
 	}
-	
-	if (strlen(PanelID) < 2)
-		PanelID := "Panel" . PanelID
-	
-	if !(oldPanelID = PanelID)
-		buttonMatrix[selectedButton].ChangePanel(PanelID)
 	
 	goto ResetInputGui
 	
 GuiClose:
 	gui, Destroy
-	ExitApp
+	goto Running
 
 ButtonCancel:
 if select
@@ -242,15 +227,18 @@ if select
 }else
 {
 	gui, Destroy
-	goto GuiExit
+	goto Running
 }
+
+ButtonExit:
+ExitApp
 
 ButtonSelect:
 	select := 1
 	gui, Destroy																; Get rid of the interactive GUI and create a temporary window while waiting for a button push
-	Gui, Add, Text, x12 y9 w120 h30 +Center, Push Button to set up.
-	Gui, Add, Button, vcancel2 x22 y49 w100 h30 , Cancel
-	Gui, Show, w147 h95, Holding GUI
+	Gui, Add, Text, x15 y10 w120 h30 +Center, Push Button to set up.
+	Gui, Add, Button, x25 y50 w100 h30 , Cancel
+	Gui, Show, w150 h100, Holding GUI
 	
 	
 	oldInput := selectedButton													; Store the old value to make sure a duplicate is not being selected

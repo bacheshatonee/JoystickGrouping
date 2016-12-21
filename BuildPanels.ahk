@@ -1,14 +1,16 @@
 ;Build panels
 
-buttonMatrix := []
+
 
 ;*******************************************************************************************************************
 ;Create Panel 1
-Panel1 := []
+Panel1 := object()
 Panel1 := new VPANEL("Panel1")
 
 Panel1.JoystickID :=1
 Panel1.addMaster("default",1)
+
+PanelMatrix["Panel1"] := Panel1
 
 (Panel1.vButtons)["1Joy1"] := new VBUTTON(Panel1,1,0,0,"1",30)
 buttonMatrix["1Joy1"] := (Panel1.vButtons)["1Joy1"]
@@ -122,11 +124,13 @@ buttonMatrix["1JoyPOVLeft"] := (Panel1.vButtons)["1JoyPOVLeft"]
 ;MsgBox, 0, Panel, Panel 2
 
 ;Create Panel 2
-Panel2 := []
+Panel2 := object()
 Panel2 := new VPANEL("Panel2")
 
 Panel2.JoystickID :=2
 Panel2.addMaster("default",1)
+
+PanelMatrix["Panel2"] := Panel2
 
 (Panel2.vButtons)["2Joy1"] := new VBUTTON(Panel2,1,0,0,"1",30)
 buttonMatrix["2Joy1"] := (Panel2.vButtons)["2Joy1"]
@@ -240,11 +244,13 @@ buttonMatrix["2JoyPOVLeft"] := (Panel2.vButtons)["2JoyPOVLeft"]
 ;MsgBox, 0, Panel, Panel 3
 
 ;Create Panel 3
-Panel3 := []
+Panel3 := object()
 Panel3 := new VPANEL("Panel3")
 
 Panel3.JoystickID :=3
 Panel3.addMaster("default",1)
+
+PanelMatrix["Panel3"] := Panel3
 
 (Panel3.vButtons)["3Joy1"] := new VBUTTON(Panel3,1,0,0,"1",30)
 buttonMatrix["3Joy1"] := (Panel3.vButtons)["3Joy1"]
@@ -359,11 +365,13 @@ buttonMatrix["3JoyPOVLeft"] := (Panel3.vButtons)["3JoyPOVLeft"]
 ;MsgBox, 0, Panel, Panel 4
 
 ;Create Panel 4
-Panel4 := []
+Panel4 := object()
 Panel4 := new VPANEL("Panel4")
 
 Panel4.JoystickID :=4
 Panel4.addMaster("default",1)
+
+PanelMatrix["Panel4"] := Panel4
 
 (Panel4.vButtons)["4Joy1"] := new VBUTTON(Panel4,1,0,0,"1",30)
 buttonMatrix["4Joy1"] := (Panel4.vButtons)["4Joy1"]
@@ -479,11 +487,13 @@ buttonMatrix["4JoyPOVLeft"] := (Panel4.vButtons)["4JoyPOVLeft"]
 
 
 ;Create Panel 5
-Panel5 := []
+Panel5 := object()
 Panel5 := new VPANEL("Panel5")
 
 Panel5.JoystickID :=5
 Panel5.addMaster("default",1)
+
+PanelMatrix["Panel5"] := Panel5
 
 (Panel5.vButtons)["5Joy1"] := new VBUTTON(Panel5,1,0,0,"1",30)
 buttonMatrix["5Joy1"] := (Panel5.vButtons)["5Joy1"]
