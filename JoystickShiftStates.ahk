@@ -1,22 +1,16 @@
-;******************************************************************************************		Global Variables
-
+;******************************************************************************************			Global Variables
 buttonMatrix := []
 panelMatrix := []
 
 ExitState := 0
 
-
-#include C:\Users\Chris\Dropbox\Personal Docs\Flight Sim Cockpit\Panels.ahk						; Classes that describe the panel and button objects
-#include C:\Users\Chris\Dropbox\Personal Docs\Flight Sim Cockpit\BuildPanels.ahk				; Instructions for creating a set of panels and objects as a starter
+;******************************************************************************************			Include
+#include C:\Users\Chris\Dropbox\Personal Docs\Flight Sim Cockpit\Panels.ahk							; Classes that describe the panel and button objects
+#include C:\Users\Chris\Dropbox\Personal Docs\Flight Sim Cockpit\BuildPanels.ahk					; Instructions for creating a set of panels and objects as a starter
 
 #include C:\Users\Chris\Dropbox\Personal Docs\Flight Sim Cockpit\ButtonMap.ahk					; Code to have the inputs from the joysticks remapped through this system, also calls the GUI for the first time
-
-
-
-
-
-;******************************************************************************************		General Runtime
-
+	
+;******************************************************************************************			General Runtime
 
 Running:
 while !ExitState
@@ -29,14 +23,11 @@ while !ExitState
 }
 ExitApp
 
-
-
-;******************************************************************************************   GUI Functions
-
+;******************************************************************************************   		GUI Functions
 
 ResetInputGui:
 	select := 0
-	cbMaster := buttonMatrix[selectedButton].checkMaster()									; Get data about the selected input
+	cbMaster := buttonMatrix[selectedButton].checkMaster()											; Get data about the selected input
 	oldMaster := cbMaster
 	cbContinuous := buttonMatrix[selectedButton].checkContinuous()
 	cbToggle := buttonMatrix[selectedButton].checkToggle()
@@ -96,7 +87,7 @@ ResetInputGui:
 	outValue7 := buttonMatrix[selectedButton].getValueByMaster(masterState7)
 	outValue8 := buttonMatrix[selectedButton].getValueByMaster(masterState8)
 
-	Gui, Add, Radio, -Wrap vPanelID x20 y15 h20 checked%Panel1% , Panel1		; Build the GUI to view and edit keymappings
+	Gui, Add, Radio, -Wrap vPanelID x20 y15 h20 checked%Panel1% , Panel1								; Build the GUI to view and edit keymappings
 	Gui, Add, Radio, -Wrap x90 y15 h20 checked%rPanel2% , Panel2
 	Gui, Add, Radio, -Wrap x160 y15 h20 checked%rPanel3% , Panel3
 	Gui, Add, Radio, -Wrap x230 y15 h20 checked%rPanel4% , Panel4
@@ -157,7 +148,7 @@ ResetInputGui:
 
 
 
-;*************************************************************************				GUI Labels	
+;*************************************************************************							GUI Labels	
 
 ButtonSave:
 	gui, submit
