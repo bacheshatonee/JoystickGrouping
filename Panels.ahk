@@ -1,8 +1,3 @@
-SendMode Input
-
-	
-
-
 ;   Class Definitions
 ;***********************
 class VPANEL																; Panel objects hold the master states for their associated button objects, this determines which buttons are effected by included shift states
@@ -67,7 +62,7 @@ class VPANEL																; Panel objects hold the master states for their ass
 }
 
 
-
+;******************************************************************************
 
 
 
@@ -214,10 +209,10 @@ class VBUTTON																;class definition for button on a panel
 		panelState := this.PARENT.GetMaster()								; Set the current master state to the current master state for the panel
 		
 		msIndex := 0
-		loop 8																; Test each of the master states in the  to see if any of them are currently down
+		loop 8																; Test each of the master states in the "masterStateArray" to see if any of them are currently down
 		{
 			msIndex := msIndex + 1
-			testMaster := GetKeyState(this.PARENT.GetMasterByRef(msIndex))	; If any of them are down, set them as the master state
+			testMaster := this.PARENT.GetMasterByRef(msIndex)	; If any of them are down, set them as the master state
 			if (GetKeyState(testMaster) = "D")
 			{
 				panelState := testMaster
