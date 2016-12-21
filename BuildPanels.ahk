@@ -1,8 +1,5 @@
 ;Build panels
 
-
-
-;*******************************************************************************************************************
 ;Create Panel 1
 Panel1 := object()
 Panel1 := new VPANEL("Panel1")
@@ -121,7 +118,6 @@ buttonMatrix["1JoyPOVDown"] := (Panel1.vButtons)["1JoyPOVDown"]
 buttonMatrix["1JoyPOVLeft"] := (Panel1.vButtons)["1JoyPOVLeft"]
 
 
-;MsgBox, 0, Panel, Panel 2
 
 ;Create Panel 2
 Panel2 := object()
@@ -241,7 +237,6 @@ buttonMatrix["2JoyPOVDown"] := (Panel2.vButtons)["2JoyPOVDown"]
 buttonMatrix["2JoyPOVLeft"] := (Panel2.vButtons)["2JoyPOVLeft"]
 
 
-;MsgBox, 0, Panel, Panel 3
 
 ;Create Panel 3
 Panel3 := object()
@@ -362,7 +357,6 @@ buttonMatrix["3JoyPOVLeft"] := (Panel3.vButtons)["3JoyPOVLeft"]
 
 
 
-;MsgBox, 0, Panel, Panel 4
 
 ;Create Panel 4
 Panel4 := object()
@@ -482,8 +476,6 @@ buttonMatrix["4JoyPOVDown"] := (Panel4.vButtons)["4JoyPOVDown"]
 buttonMatrix["4JoyPOVLeft"] := (Panel4.vButtons)["4JoyPOVLeft"]
 
 
-
-;MsgBox, 0, Panel, Panel 5
 
 
 ;Create Panel 5
